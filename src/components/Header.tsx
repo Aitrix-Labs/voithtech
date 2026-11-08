@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { mainNav, serviceNav } from '../data'
 import { GlobeIcon, MailIcon, PhoneIcon, SearchIcon } from './Icons'
 import { Logo } from './Logo'
@@ -7,13 +7,18 @@ import { Logo } from './Logo'
 export function Header() {
   const [solid, setSolid] = useState(false)
   const [open, setOpen] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > window.innerHeight * 0.72)
+    const onScroll = () => setSolid(window.scrollY > Math.min(window.innerHeight * 0.55, 480))
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -26,7 +31,7 @@ export function Header() {
 
   return (
     <>
-      <header className={`header is-over-hero${solid || open ? ' is-solid' : ''}`}>
+      <header className={`header is-over-hero${solid || open ? ' is-solid' : ''}${open ? ' is-menu-open' : ''}`}>
         <div className="header__inner">
           <Logo />
           <nav className="header__nav" aria-label="Primary">
@@ -59,9 +64,12 @@ export function Header() {
               </div>
             </div>
           </nav>
+          <Link className="header__contact-mobile" to="/contact" aria-label="Contact">
+            <MailIcon />
+          </Link>
           <button
             type="button"
-            className="header__menu-btn"
+            className={`header__menu-btn${open ? ' is-open' : ''}`}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
@@ -71,8 +79,15 @@ export function Header() {
         </div>
       </header>
 
-      <div className={`mobile-nav${open ? ' is-open' : ''}`}>
-        {[...mainNav, ...serviceNav, { label: 'Services', to: '/services' }, { label: 'Contact', to: '/contact' }].map((item) => (
+      <div className={`mobile-nav${open ? ' is-open' : ''}`} id="mobile-navigation">
+        <p className="mobile-nav__label">Industries</p>
+        {mainNav.map((item) => (
+          <Link key={item.to} to={item.to} onClick={close}>
+            {item.label}
+          </Link>
+        ))}
+        <p className="mobile-nav__label">Company</p>
+        {[...serviceNav, { label: 'Services', to: '/services' }, { label: 'Contact', to: '/contact' }].map((item) => (
           <Link key={item.to + item.label} to={item.to} onClick={close}>
             {item.label}
           </Link>

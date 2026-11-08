@@ -4,7 +4,7 @@ import { asset } from '../asset'
 import { Hero } from '../components/Hero'
 import { Chevron, ChevronDown } from '../components/Icons'
 import { Reveal } from '../components/Reveal'
-import { businessFields, career, news, portfolio, promise, standFor } from '../data'
+import { businessFields, career, news, promise, standFor } from '../data'
 
 export default function HomePage() {
   const [openPillar, setOpenPillar] = useState<string>(standFor.pillars[0].id)
@@ -98,29 +98,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container">
-          <Reveal>
-            <p className="overline">{portfolio.overline}</p>
-            <h2 className="section-title">{portfolio.title}</h2>
-          </Reveal>
-          <div className="portfolio-grid">
-            {portfolio.items.map((item, i) => (
-              <Reveal key={item.title} delay={(i % 3) as 0 | 1 | 2}>
-                <Link className={`portfolio-card is-${item.tone}`} to={item.to}>
-                  <div className="portfolio-card__panel">
-                    <h3>{item.title}</h3>
-                    <span className="btn" style={{ padding: 0 }}>
-                      <Chevron />
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="section career">
         <div className="container career__layout">
           <Reveal>
@@ -144,25 +121,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="jobs-bar">
-        <div className="container jobs-bar__inner">
-          <div>
-            <strong>{career.positions}</strong>
-            <span>open positions worldwide</span>
-          </div>
-          <Link className="btn btn-white" to="/career">
-            Find your job
-            <Chevron />
-          </Link>
-        </div>
-      </section>
-
       <section className="section section-grey">
         <div className="container news-layout">
-          <Reveal>
+          <Reveal className="news-copy">
             <p className="overline">{news.overline}</p>
             <h2 className="section-title">
-              {news.title} <span className="accent">{news.accent}</span>
+              {news.title}
+              <span className="accent">{news.accent}</span>
             </h2>
             <div className="section-actions">
               <Link className="btn btn-outline" to={news.to}>
@@ -170,12 +135,14 @@ export default function HomePage() {
                 <Chevron />
               </Link>
             </div>
-            <div className="news-list" style={{ marginTop: '2rem' }}>
+            <div className="news-list">
               {news.items.map((item) => (
                 <Link key={item.title} className="news-item" to={item.to}>
-                  <time>{item.date}</time>
+                  <time dateTime={item.date}>{item.date}</time>
                   <strong>{item.title}</strong>
-                  <Chevron />
+                  <span className="news-item__arrow" aria-hidden>
+                    <Chevron />
+                  </span>
                 </Link>
               ))}
             </div>
